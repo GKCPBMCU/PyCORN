@@ -330,7 +330,7 @@ class PcUni6(OrderedDict):
         """
         if self._loaded is False:
             self.load(print_log=False)
-        xml_keys_to_be_parsed = [key for key in self.keys() if (".Xml" in key and "dict" not in key)]
+        xml_keys_to_be_parsed = [key for key in self.keys() if (".xml" in key and "dict" not in key)]
         for key in xml_keys_to_be_parsed:
             self._xml_parse(key, print_log=False)
         self.clean_up()
@@ -388,7 +388,7 @@ class PcUni6(OrderedDict):
         keys_with_array_data = []
         keys_with_xml_data = []
         for key in self.keys():
-            if "True" in key and "Xml" not in key:
+            if "True" in key and "xml" not in key:
                 keys_with_array_data.append(key)
             else:
                 keys_with_xml_data.append(key)
@@ -400,7 +400,7 @@ class PcUni6(OrderedDict):
         self_keys = list(self.keys())
         for key in self_keys:
             data_entry = self[key]
-            if "Xml" in key:
+            if "xml" in key:
                 self[key + "_dict"] = self._unpack_xml(data_entry, end_index=len(data_entry))
             elif type(data_entry) is dict:
                 self[key] = self._unpack_dict_data(data_entry, key)
@@ -427,7 +427,7 @@ class PcUni6(OrderedDict):
             if "DataType" in sub_key:
                 # value contains the DataType, so decode from bytes to string and remove the \r\n
                 processed_sub_value = sub_value.decode('utf-8').strip("\r\n")
-            elif "True" in key and "Xml" not in key:
+            elif "True" in key and "xml" not in key:
                 processed_sub_value = self._unpacker(sub_value)
             else:
                 if len(sub_value) <= 24:
@@ -496,14 +496,14 @@ class PcUni6(OrderedDict):
 
     def _xml_parse(self, chrom_name, print_log=False):
         """
-        Parse parts of the Chrom.1.Xml and create a res3-like dict
+        Parse parts of the Chrom.1.xml and create a res3-like dict
         Parameters
         ----------
         chrom_name : str, name of the chromatogram to parse
         print_log : bool, optional
 
         """
-        chrom_key = chrom_name.replace(".Xml", "")
+        chrom_key = chrom_name.replace(".xml", "")
         self[chrom_key] = {}
         tree = ElementTree.fromstring(self[chrom_name])
         mc = tree.find('Curves')
